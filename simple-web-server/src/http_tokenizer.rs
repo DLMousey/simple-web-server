@@ -1,6 +1,5 @@
 use std::borrow::Cow;
 
-// Basic version
 // TODO: maybe add user_agent, content_length, connection in the future
 pub struct HttpReq {
     pub method: String,
@@ -9,9 +8,7 @@ pub struct HttpReq {
      body: String,
 }
 
-// Early version, currently only looks for GET,POST,PUT,DELETE
 pub fn tokenize(req: Cow<'_, str>) -> HttpReq {
-
 
     // Initialize an instance of the HttpReq struct with some default values to keep the compiler happy.
     let mut t: HttpReq = HttpReq {
@@ -22,14 +19,11 @@ pub fn tokenize(req: Cow<'_, str>) -> HttpReq {
     };
 
     for (index, line_val) in req.lines().enumerate() {
-
-
         // Because the method doesn't follow a Key: val structure, we'll count our blessings
         // that the spec defines it as the very first thing in the request and match it first.
         if index == 0 {
             t.method = get_first_word(line_val);
         }
-
 
         // All other values in the headers are following a Key: Val structure,
         // so we'll break these apart into a normalised key (snake_cased) and a value.
