@@ -2,7 +2,8 @@ use std::net::TcpListener;
 use std::net::TcpStream;
 use std::io::prelude::*;
 use std::io::{self};
-use std::borrow::Cow;
+
+mod http_tokenizer;
 
 fn main() {
 
@@ -44,9 +45,9 @@ fn handle_connection(mut stream: TcpStream) {
 
     // Prints a string of the HTTP request to Terminal
     let http_str = String::from_utf8_lossy(&buffer[..]);
-    println!("{}", http_str); // prints out http request TODO: remove this later
+//    println!("{}", http_str); // prints out http request TODO: remove this later
 
-    let token = tokenize_http_req(http_str);
+    let token = http_tokenizer::tokenize(http_str);
     println!("{}", token.method); // TODO: Remove this later
 
 
@@ -54,45 +55,4 @@ fn handle_connection(mut stream: TcpStream) {
 
     stream.write(response.as_bytes()).unwrap();
     stream.flush().unwrap();
-}
-
-// Basic version
-// TODO: maybe add user_agent, content_length, connection in the future
-struct HttpReq {
-    method: String,
-    // host: String,
-    // content_type: String,
-    // body: String,
-}
-
-// Early version, currently only looks for GET,POST,PUT,DELETE
-fn tokenize_http_req(req: Cow<'_, str>) -> HttpReq {
-
-    // splits string into newlines so it can be iterated over
-    let header = req.lines();
-    let mut method = String::new();
-
-    for line in header {
-        let words = line.split_whitespace();
-        for word in words {
-            if word == "GET" {
-                method = word.to_string();
-            }
-            else if word == "POST" {
-                method = word.to_string();
-            }
-            else if word == "PUT" {
-                method = word.to_string();
-            }
-            else if word == "DELETE" {
-                method = word.to_string();
-            }
-        }
-    }
-
-    let t = HttpReq {
-        method: method,
-    };
-
-    return t
 }
