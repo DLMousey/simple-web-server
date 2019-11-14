@@ -1,3 +1,4 @@
 .idea/
 target/
 simple-web-server.iml
+.DS_Store
